@@ -1,0 +1,15 @@
+data:
+  raw_path: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/data/raw/Données_Marchés_publics_2024.xlsx"
+  processed_path: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/data/processed/Données_traitées.xlsx"
+
+models:
+  model_path: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/models/model_fraude.pkl"
+  encoder_path: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/models/fraud_encoder.pkl"
+
+outputs:
+  learning_curve: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/outputs/figures/learning_curve.png"
+  confusion_matrix: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/outputs/figures/confusion_matrix.png"
+  ROC_curve: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/outputs/figures/courbe_ROC.png"
+  feature_importances: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/outputs/figures/feature_importances.png"
+  Other_metrics: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/outputs/metrics/Autres_metrics.xlsx"
+  classification_report: "C:/Users/DELL/Documents/VEMV/business/work/DETECTION_DE_FRAUDES_FISCALES/outputs/metrics/classification_report.xlsx"
