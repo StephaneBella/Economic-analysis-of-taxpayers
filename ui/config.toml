@@ -1,0 +1,6 @@
+[theme]
+primaryColor="#064a1f"           # Vert barre d’en-tête et éléments interactifs
+backgroundColor="#f5f7f7"       # Fond global
+secondaryBackgroundColor="#ffffff" # Sidebar et inputs
+textColor="#000000"              # Texte noir pour tout
+font="Inter"                     # Police principale

@@ -1,0 +1,17 @@
+[theme]
+base = "light"
+primaryColor = "#D9650A"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F7F4EF"
+textColor = "#191712"
+linkColor = "#D9650A"
+borderColor = "#E8E0D3"
+dataframeBorderColor = "#E8E0D3"
+baseRadius = "medium"
+buttonRadius = "medium"
+baseFontSize = 16
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+headingFont = "Sora:https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap"
+
+[client]
+toolbarMode = "minimal"

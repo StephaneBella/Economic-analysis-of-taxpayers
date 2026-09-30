@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comportements à risque des contribuables camerounais</title>
+    <style>
+        /* Styles CSS complets */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f5f5f5;
+        }
+        .header { 
+            background: #006600; 
+            color: white; 
+            padding: 1rem; 
+            text-align: center;
+        }
+        .tabs { 
+            display: flex; 
+            background: #004400; 
+        }
+        .tab { 
+            padding: 1rem 2rem; 
+            cursor: pointer; 
+            color: white;
+            transition: background 0.3s;
+        }
+        .tab:hover { 
+            background: #005500; 
+        }
+        .tab.active { 
+            background: #008800; 
+            font-weight: bold; 
+        }
+        .tab-content { 
+            display: none; 
+            padding: 2rem; 
+            background: white;
+            margin: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tab-content.active { 
+            display: block; 
+        }
+        .form-group { 
+            margin-bottom: 1.5rem; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: bold; 
+            color: #333;
+        }
+        select, input { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        button { 
+            background: #006600; 
+            color: white; 
+            padding: 0.75rem 1.5rem; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        button:hover { 
+            background: #008800; 
+        }
+        .result { 
+            margin-top: 2rem; 
+            padding: 1.5rem; 
+            border-radius: 5px; 
+            border-left: 5px solid;
+        }
+        .risk-high { 
+            background: #ffebee; 
+            color: #c62828; 
+            border-left-color: #c62828;
+        }
+        .risk-medium { 
+            background: #fff3e0; 
+            color: #ef6c00; 
+            border-left-color: #ef6c00;
+        }
+        .risk-low { 
+            background: #f1f8e9; 
+            color: #558b2f; 
+            border-left-color: #558b2f;
+        }
+        .risk-none { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            border-left-color: #2e7d32;
+        }
+        .prediction-type { 
+            margin: 1rem 0; 
+        }
+        .prediction-type button { 
+            margin-right: 1rem; 
+        }
+        .prediction-section { 
+            margin-top: 2rem; 
+        }
+        .model-results { 
+            background: #f8f9fa; 
+            padding: 1rem; 
+            border-radius: 5px; 
+            margin: 1rem 0; 
+        }
+        small { 
+            color: #666; 
+            font-size: 0.9rem; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .progress {
+            height: 20px;
+            background: #006600;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Travail de recherche · Cameroun</h1>
+        <h2>Les comportements à risque des contribuables camerounais (données simulées)</h2>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('accueil')">Accueil</div>
+        <div class="tab" onclick="showTab('prediction')">Prédictions</div>
+    </div>
+
+    <!-- ONGLET ACCUEIL -->
+    <div id="accueil" class="tab-content active">
+        <h2>Présentation de l'Application</h2>
+        
+        <h3>Fonctionnalités</h3>
+        <ul>
+            <li>Prédiction du risque de fraude pour un contribuable individuel</li>
+            <li>Analyse par lot de plusieurs contribuables</li>
+            <li>Deux types de classification : binaire et multiclasse</li>
+            <li>Interface adaptée aux besoins de l'administration fiscale</li>
+        </ul>
+
+        <h3>Résultats de la Modélisation</h3>
+        <div class="model-results">
+            <h4>Classification Binaire</h4>
+            <ul>
+                <li>Précision : 92%</li>
+                <li>Rappel : 88%</li>
+                <li>F1-Score : 90%</li>
+                <li>AUC : 0.95</li>
+            </ul>
+
+            <h4>Classification Multiclasse</h4>
+            <ul>
+                <li>Précision moyenne : 89%</li>
+                <li>Rappel moyen : 86%</li>
+                <li>F1-Score moyen : 87%</li>
+            </ul>
+        </div>
+
+        <h3>Documentation du Modèle</h3>
+        <p><strong>Variables utilisées :</strong></p>
+        <table>
+            <tr>
+                <th>Variable</th>
+                <th>Description</th>
+                <th>Valeurs possibles</th>
+            </tr>
+            <tr>
+                <td>Regime</td>
+                <td>Régime fiscal du contribuable</td>
+                <td>IGS, REEL</td>
+            </tr>
+            <tr>
+                <td>Persojuri</td>
+                <td>Type de personne juridique</td>
+                <td>Morale, Physique</td>
+            </tr>
+            <tr>
+                <td>gctax</td>
+                <td>Groupe de compte de gestion</td>
+                <td>Petits comptes, Grands comptes</td>
+            </tr>
+            <tr>
+                <td>Type de déclarant</td>
+                <td>Type de déclarant des marchés publics</td>
+                <td>Déclarants permanents, Défaillants</td>
+            </tr>
+            <tr>
+                <td>Conformité</td>
+                <td>Conformité de déclaration 2023</td>
+                <td>MD, NPC, MND</td>
+            </tr>
+            <tr>
+                <td>MinCA23</td>
+                <td>Minoration du chiffre d'affaires 2023</td>
+                <td>Oui, Non</td>
+            </tr>
+            <tr>
+                <td>Nbprestation_marches</td>
+                <td>Nombre de prestations de marchés</td>
+                <td>Un marché, Deux marchés, Plus de deux marchés</td>
+            </tr>
+            <tr>
+                <td>Typedemarche</td>
+                <td>Type de marché</td>
+                <td>Bons commande, Lettre commande & Marchés, Mixte</td>
+            </tr>
+            <tr>
+                <td>DSF23</td>
+                <td>Déclaration sociale fiscale 2023</td>
+                <td>Oui, Non</td>
+            </tr>
+            <tr>
+                <td>MontantMP24</td>
+                <td>Montant des marchés publics 2024 (FCFA)</td>
+                <td>Valeur numérique</td>
+            </tr>
+        </table>
+
+        <h3>Architecture Technique</h3>
+        <p>L'application communique avec un service de calcul local.</p>
+        <ul>
+            <li><strong>Route prédiction simple :</strong> POST /predict-single</li>
+            <li><strong>Route prédiction lot :</strong> POST /predict-batch</li>
+            <li><strong>Modèles disponibles :</strong> Classification binaire (2 classes) et multiclasse (3 classes)</li>
+        </ul>
+    </div>
+
+    <!-- ONGLET PREDICTIONS -->
+    <div id="prediction" class="tab-content">
+        <h2>Prédictions des Risques de Fraude</h2>
+        
+        <div class="prediction-type">
+            <button onclick="showPredictionType('single')">Prédiction Individuelle</button>
+            <button onclick="showPredictionType('batch')">Prédiction par Lot</button>
+        </div>
+
+        <!-- PREDICTION INDIVIDUELLE -->
+        <div id="single-prediction" class="prediction-section">
+            <h3>Prédiction pour un Contribuable</h3>
+            
+            <form id="single-form">
+                <div class="form-group">
+                    <label>Régime :</label>
+                    <select name="Regime" required>
+                        <option value="">Sélectionner</option>
+                        <option value="IGS">IGS</option>
+                        <option value="REEL">REEL</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Personne Juridique :</label>
+                    <select name="Persojuri" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Morale">Morale</option>
+                        <option value="Physique">Physique</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Groupe de compte :</label>
+                    <select name="gctax" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Petits comptes">Petits comptes</option>
+                        <option value="Grands comptes">Grands comptes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Type de déclarant :</label>
+                    <select name="Type_declarant" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Déclarants permanents">Déclarants permanents</option>
+                        <option value="Défaillants">Défaillants</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Conformité déclaration 2023 :</label>
+                    <select name="Conformite" required>
+                        <option value="">Sélectionner</option>
+                        <option value="MD">MD</option>
+                        <option value="NPC">NPC</option>
+                        <option value="MND">MND</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Minimum CA 2023 :</label>
+                    <select name="MinCA23" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre de prestations :</label>
+                    <select name="Nbprestation_marches" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Un marché">Un marché</option>
+                        <option value="Deux marchés">Deux marchés</option>
+                        <option value="Plus de deux marchés">Plus de deux marchés</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Type de marché :</label>
+                    <select name="Typedemarche" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Bons_commande">Bons commande</option>
+                        <option value="Lettre_commande&Marchés">Lettre commande & Marchés</option>
+                        <option value="Mixte">Mixte</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>DSF 2023 :</label>
+                    <select name="DSF23" required>
+                        <option value="">Sélectionner</option>
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Montant Marché Public 2024 (FCFA) :</label>
+                    <input type="number" name="MontantMP24" required step="0.01" min="0" placeholder="Entrez le montant en FCFA">
+                    <small>Montant en FCFA</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Type de modèle :</label>
+                    <select name="model_type" required>
+                        <option value="">Sélectionner</option>
+                        <option value="binary">Classification Binaire (2 classes)</option>
+                        <option value="multiclass">Classification Multiclasse (3 classes)</option>
+                    </select>
+                    <small>Binaire: Risque/Non-Risque | Multiclasse: Pas de risque/Risque faible/Risque élevé</small>
+                </div>
+
+                <button type="button" onclick="predictSingle()">Prédire le Risque</button>
+            </form>
+
+            <div id="single-result"></div>
+        </div>
+
+        <!-- PREDICTION PAR LOT -->
+        <div id="batch-prediction" class="prediction-section" style="display: none;">
+            <h3>Prédiction pour plusieurs Contribuables</h3>
+            
+            <div class="form-group">
+                <label>Importer fichier CSV :</label>
+                <input type="file" id="batch-file" accept=".csv">
+                <small>Le fichier doit contenir les colonnes : Regime, Persojuri, gctax, Type_declarant, Conformite, MinCA23, Nbprestation_marches, Typedemarche, DSF23, MontantMP24</small>
+            </div>
+
+            <div class="form-group">
+                <label>Type de modèle :</label>
+                <select id="batch-model-type">
+                    <option value="binary">Classification Binaire</option>
+                    <option value="multiclass">Classification Multiclasse</option>
+                </select>
+            </div>
+
+            <button onclick="predictBatch()">Lancer l'Analyse</button>
+            
+            <div id="batch-result">
+                <div id="batch-progress" style="display: none;">
+                    <p>Analyse en cours... <span id="progress-text">0%</span></p>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-bar"></div>
+                    </div>
+                </div>
+                <div id="batch-results-table"></div>
+                <div id="batch-summary"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration de l'API
+        const API_URL = 'http://127.0.0.1:8000'; // À adapter avec votre URL d'API
+
+        // Gestion des onglets
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function showPredictionType(type) {
+            document.querySelectorAll('.prediction-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(type + '-prediction').style.display = 'block';
+        }
+
+        // Fonction utilitaire pour formater les montants
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('fr-FR', { 
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2 
+            }).format(amount);
+        }
+
+        // Prédiction individuelle
+        async function predictSingle() {
+            const form = document.getElementById('single-form');
+            const formData = new FormData(form);
+            
+            // Validation des champs
+            let isValid = true;
+            form.querySelectorAll('select[required], input[required]').forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            const data = {
+                Regime: formData.get('Regime'),
+                Persojuri: formData.get('Persojuri'),
+                gctax: formData.get('gctax'),
+                Type_declarant: formData.get('Type_declarant'),
+                Conformite: formData.get('Conformite'),
+                MinCA23: formData.get('MinCA23'),
+                Nbprestation_marches: formData.get('Nbprestation_marches'),
+                Typedemarche: formData.get('Typedemarche'),
+                DSF23: formData.get('DSF23'),
+                MontantMP24: parseFloat(formData.get('MontantMP24')),
+                model_type: formData.get('model_type')
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/predict-single`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                displaySingleResult(result, data);
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la prédiction. Vérifiez la connexion à l\'API.');
+            }
+        }
+
+        function displaySingleResult(result, inputData) {
+            const resultDiv = document.getElementById('single-result');
+            let riskClass = '';
+            let riskText = '';
+            let riskDescription = '';
+            
+            if (result.model_type === 'binary') {
+                if (result.prediction === 'Risque de Fraude') {
+                    riskClass = 'risk-high';
+                    riskText = 'RISQUE DE FRAUDE DÉTECTÉ';
+                    riskDescription = 'Ce contribuable présente un risque élevé de fraude fiscale. Une vérification approfondie est recommandée.';
+                } else {
+                    riskClass = 'risk-none';
+                    riskText = 'AUCUN RISQUE DÉTECTÉ';
+                    riskDescription = 'Ce contribuable ne présente pas de risque significatif de fraude fiscale.';
+                }
+            } else {
+                switch(result.prediction) {
+                    case 'Pas de risque de fraude':
+                        riskClass = 'risk-none';
+                        riskText = 'PAS DE RISQUE';
+                        riskDescription = 'Aucun risque de fraude détecté.';
+                        break;
+                    case 'risque faible':
+                        riskClass = 'risk-low';
+                        riskText = 'RISQUE FAIBLE';
+                        riskDescription = 'Risque de fraude faible. Surveillance standard recommandée.';
+                        break;
+                    case 'risque élevé':
+                        riskClass = 'risk-high';
+                        riskText = 'RISQUE ÉLEVÉ';
+                        riskDescription = 'Risque de fraude élevé. Contrôle renforcé nécessaire.';
+                        break;
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="result ${riskClass}">
+                    <h3>Résultat de l'Analyse</h3>
+                    <h4>${riskText}</h4>
+                    <p><strong>Niveau de risque :</strong> ${result.prediction}</p>
+                    <p><strong>Probabilité :</strong> ${(result.probability * 100).toFixed(2)}%</p>
+                    <p><strong>Description :</strong> ${riskDescription}</p>
+                    <p><strong>Montant MP 2024 :</strong> ${formatCurrency(inputData.MontantMP24)} FCFA</p>
+                    <p><strong>Modèle utilisé :</strong> ${result.model_type === 'binary' ? 'Classification binaire' : 'Classification multiclasse'}</p>
+                    <p><strong>Date de l'analyse :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+                </div>
+            `;
+        }
+
+        // Prédiction par lot
+        async function predictBatch() {
+            const fileInput = document.getElementById('batch-file');
+            const modelType = document.getElementById('batch-model-type').value;
+            
+            if (!fileInput.files.length) {
+                alert('Veuillez sélectionner un fichier CSV');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('model_type', modelType);
+            
+            try {
+                document.getElementById('batch-progress').style.display = 'block';
+                updateProgress(0, 'Début de l\'analyse...');
+                
+                // Simulation de progression
+                for (let i = 0; i <= 100; i += 10) {
+                    updateProgress(i, `Traitement des données... ${i}%`);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+                
+                const response = await fetch(`${API_URL}/predict-batch`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                
+                const results = await response.json();
+                updateProgress(100, 'Analyse terminée');
+                displayBatchResults(results);
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'analyse par lot. Vérifiez le format du fichier et la connexion à l\'API.');
+                document.getElementById('batch-progress').style.display = 'none';
+            }
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('progress-text').textContent = text;
+        }
+
+        function displayBatchResults(results) {
+            const tableDiv = document.getElementById('batch-results-table');
+            const summaryDiv = document.getElementById('batch-summary');
+            
+            if (!results || results.length === 0) {
+                tableDiv.innerHTML = '<p>Aucun résultat à afficher</p>';
+                return;
+            }
+            
+            // Statistiques
+            const stats = {
+                total: results.length,
+                highRisk: 0,
+                mediumRisk: 0,
+                lowRisk: 0,
+                noRisk: 0
+            };
+            
+            results.forEach(result => {
+                if (result.prediction.includes('élevé') || result.prediction === 'Risque de Fraude') stats.highRisk++;
+                else if (result.prediction.includes('faible')) stats.mediumRisk++;
+                else if (result.prediction.includes('Pas de risque')) stats.noRisk++;
+            });
+            
+            // Affichage des statistiques
+            summaryDiv.innerHTML = `
+                <div class="result">
+                    <h4>Résumé de l'Analyse</h4>
+                    <p><strong>Total des contribuables analysés :</strong> ${stats.total}</p>
+                    <p><strong>Risque élevé :</strong> ${stats.highRisk} (${((stats.highRisk/stats.total)*100).toFixed(1)}%)</p>
+                    <p><strong>Risque faible :</strong> ${stats.mediumRisk} (${((stats.mediumRisk/stats.total)*100).toFixed(1)}%)</p>
+                    <p><strong>Pas de risque :</strong> ${stats.noRisk} (${((stats.noRisk/stats.total)*100).toFixed(1)}%)</p>
+                </div>
+            `;
+            
+            // Tableau des résultats
+            let tableHTML = `
+                <h4>Détail des Résultats</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Régime</th>
+                            <th>Personne</th>
+                            <th>Montant MP24</th>
+                            <th>Risque</th>
+                            <th>Probabilité</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            results.forEach((result, index) => {
+                let riskClass = '';
+                if (result.prediction.includes('élevé') || result.prediction === 'Risque de Fraude') riskClass = 'risk-high';
+                else if (result.prediction.includes('faible')) riskClass = 'risk-medium';
+                else riskClass = 'risk-none';
+                
+                tableHTML += `
+                    <tr class="${riskClass}">
+                        <td>${index + 1}</td>
+                        <td>${result.Regime}</td>
+                        <td>${result.Persojuri}</td>
+                        <td>${formatCurrency(result.MontantMP24)}</td>
+                        <td><strong>${result.prediction}</strong></td>
+                        <td>${(result.probability * 100).toFixed(1)}%</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += '</tbody></table>';
+            tableDiv.innerHTML = tableHTML;
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Application initialisée');
+        });
+    </script>
+</body>
+</html>

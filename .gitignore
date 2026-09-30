@@ -1,0 +1,32 @@
+# Data
+*.csv
+*.xlsx
+*.xls
+*.xlsm
+
+# Temporary Excel files
+~$*.xlsx
+~$*.xls
+~$*.xlsm
+
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+
+# Model files
+# *.pkl
+# *.joblib
+
+# CatBoost
+catboost_info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
